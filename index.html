@@ -4,110 +4,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>画像分割アプリ</title>
+    <title>画像分割アプリ - Image Splitter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
-
         body {
             font-family: 'Noto Sans JP', sans-serif;
             text-align: center;
-            background-color: #FFF;
-            padding: 30px 10px;
-            color: #333;
+            background-color: #FFFFFF;
+            color: #1c1c1c;
             margin: 0;
+            padding: 20px 10px;
+            line-height: 1.6;
         }
 
         h1 {
-            font-size: 28px;
-            color: #333;
+            font-size: 24px;
+            font-weight: 700;
             margin-bottom: 30px;
         }
 
         .content-section {
-            background: #FFF;
-            padding: 40px;
-            max-width: 800px;
+            background: #FFFFFF;
+            max-width: 900px;
             margin: 0 auto;
             text-align: left;
         }
 
         .step {
-            font-size: 22px;
-            font-weight: bold;
-            color: #333;
-            margin-top: 25px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 20px;
             margin-bottom: 10px;
-            border-bottom: 2px solid #333;
+            border-bottom: 2px solid #1c1c1c;
             padding-bottom: 5px;
         }
 
         input[type="file"],
         input[type="number"] {
             font-size: 16px;
-            padding: 10px;
-            border: 2px solid #ccc;
+            padding: 12px;
+            border: 1px solid #ccc;
             width: 100%;
             box-sizing: border-box;
             border-radius: 0;
+            background: #f9f9f9;
         }
 
         input[type="number"] {
-            width: 80px;
+            width: 70px;
             display: inline-block;
+            margin-right: 10px;
+        }
+
+        /* ボタン共通スタイル */
+        .action-btn,
+        .dl-btn {
+            background-color: #1c1c1c;
+            /* 通常時：黒 */
+            color: #FFFFFF;
+            /* 文字色：白 */
+            border: 1px solid #1c1c1c;
+            cursor: pointer;
+            font-weight: 700;
+            border-radius: 0;
+            transition: all 0.2s ease;
+            display: block;
+            width: 100%;
         }
 
         .action-btn {
-            font-size: 20px;
+            font-size: 18px;
             padding: 15px;
-            background: #474b49;
-            color: white;
-            border: none;
-            cursor: pointer;
             margin-top: 20px;
-            font-weight: bold;
-            width: 100%;
-            display: block;
-            border-radius: 0;
+        }
+
+        .zip-btn {
+            margin-top: 20px;
+        }
+
+        .dl-btn {
+            padding: 12px 0;
+            font-size: 14px;
+        }
+
+        /* ホバー時の設定（モノトーン反転） */
+        .action-btn:hover,
+        .dl-btn:hover {
+            background-color: #e3e3e3;
+            /* ホバー時：ライトグレー */
+            border-color: #e3e3e3;
+            color: #1c1c1c;
+            /* 文字色を黒にして視認性を確保 */
         }
 
         .result-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
+            gap: 10px;
+            justify-content: flex-start;
             margin-top: 20px;
-            margin-bottom: 20px;
         }
 
         .result-item {
+            width: calc(20% - 8px);
             border: 1px solid #eee;
-            padding: 10px;
+            padding: 8px;
             text-align: center;
-            background: #fafafa;
-            border-radius: 0;
+            background: #FFFFFF;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .result-item img {
-            max-width: 150px;
-            max-height: 150px;
-            margin-bottom: 10px;
+            width: 100%;
+            height: auto;
             border: 1px solid #ddd;
-            object-fit: contain;
+            display: block;
+            margin-bottom: 10px;
         }
 
-        .dl-btn {
-            background: #474b49;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            cursor: pointer;
-            font-size: 14px;
-            border-radius: 0;
-        }
+        @media (max-width: 768px) {
+            .result-item {
+                width: calc(33.33% - 7px);
+            }
 
-        .zip-btn {
-            background: #d07ea2;
-            margin-top: 15px;
+            .dl-btn {
+                padding: 10px 0;
+                font-size: 13px;
+            }
         }
     </style>
 </head>
@@ -117,12 +145,14 @@
     <h1>画像を分割する</h1>
 
     <div class="content-section">
-        <div class="step">ステップ1：画像を選ぶ（1枚）</div>
+        <div class="step">1. 画像を選択</div>
         <input type="file" id="splitInput" accept="image/*">
 
-        <div class="step">ステップ2：分割数を入力</div>
-        <label>タテ: <input type="number" id="rows" value="2" min="1"></label>
-        <label>ヨコ: <input type="number" id="cols" value="2" min="1"></label>
+        <div class="step">2. 分割数（タテ × ヨコ）</div>
+        <div style="margin-bottom: 10px;">
+            タテ: <input type="number" id="rows" value="2" min="1">
+            ヨコ: <input type="number" id="cols" value="2" min="1">
+        </div>
 
         <button id="splitBtn" class="action-btn" onclick="handleSplit()">分割する</button>
 
@@ -138,6 +168,12 @@
     <script>
         let splitBlobs = [];
 
+        function getFormattedDate() {
+            const now = new Date();
+            const pad = (num) => String(num).padStart(2, '0');
+            return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+        }
+
         function handleSplit() {
             const file = document.getElementById('splitInput').files[0];
             const r = parseInt(document.getElementById('rows').value);
@@ -145,7 +181,7 @@
             const results = document.getElementById('splitResults');
 
             if (!file || r < 1 || c < 1) {
-                results.innerHTML = '<p style="color:red; font-weight:bold;">エラー：画像と分割数を正しく入力してください。</p>';
+                results.innerHTML = '<p style="color:red; font-size:14px;">入力エラーがあります。</p>';
                 return;
             }
 
@@ -158,6 +194,7 @@
                 const w = img.width / c;
                 const h = img.height / r;
                 let count = 0;
+                const dateStr = getFormattedDate();
 
                 for (let y = 0; y < r; y++) {
                     for (let x = 0; x < c; x++) {
@@ -169,12 +206,15 @@
                         cvs.toBlob(blob => {
                             count++;
                             const url = URL.createObjectURL(blob);
-                            const name = `p_${y}_${x}.png`;
+                            const name = `${dateStr}_${y + 1}-${x + 1}.png`;
                             splitBlobs.push({ blob: blob, name: name });
 
                             const item = document.createElement('div');
                             item.className = 'result-item';
-                            item.innerHTML = `<img src="${url}"><br><button class="dl-btn" onclick="saveAs('${url}', '${name}')">保存</button>`;
+                            item.innerHTML = `
+                                <img src="${url}">
+                                <button class="dl-btn" onclick="saveAs(URL.createObjectURL(splitBlobs.find(b=>b.name==='${name}').blob), '${name}')">保存</button>
+                            `;
                             results.appendChild(item);
 
                             if (count === r * c) {
@@ -190,8 +230,11 @@
         function downloadZip() {
             if (splitBlobs.length === 0) return;
             const zip = new JSZip();
+            const dateStr = getFormattedDate();
             splitBlobs.forEach(b => zip.file(b.name, b.blob));
-            zip.generateAsync({ type: "blob" }).then(c => saveAs(c, "bunkatsu.zip"));
+            zip.generateAsync({ type: "blob" }).then(content => {
+                saveAs(content, `split_images_${dateStr}.zip`);
+            });
         }
     </script>
 </body>
