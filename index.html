@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像分割アプリ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            text-align: center;
+            background-color: #FFF;
+            padding: 30px 10px;
+            color: #333;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .content-section {
+            background: #FFF;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .step {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+        }
+
+        input[type="file"],
+        input[type="number"] {
+            font-size: 16px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 0;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            display: inline-block;
+        }
+
+        .action-btn {
+            font-size: 20px;
+            padding: 15px;
+            background: #474b49;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            width: 100%;
+            display: block;
+            border-radius: 0;
+        }
+
+        .result-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            border: 1px solid #eee;
+            padding: 10px;
+            text-align: center;
+            background: #fafafa;
+            border-radius: 0;
+        }
+
+        .result-item img {
+            max-width: 150px;
+            max-height: 150px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            object-fit: contain;
+        }
+
+        .dl-btn {
+            background: #474b49;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 0;
+        }
+
+        .zip-btn {
+            background: #d07ea2;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>画像を分割する</h1>
+
+    <div class="content-section">
+        <div class="step">ステップ1：画像を選ぶ（1枚）</div>
+        <input type="file" id="splitInput" accept="image/*">
+
+        <div class="step">ステップ2：分割数を入力</div>
+        <label>タテ: <input type="number" id="rows" value="2" min="1"></label>
+        <label>ヨコ: <input type="number" id="cols" value="2" min="1"></label>
+
+        <button id="splitBtn" class="action-btn" onclick="handleSplit()">分割する</button>
+
+        <div id="splitResults" class="result-container"></div>
+
+        <button id="splitZipBtn" class="action-btn zip-btn" style="display: none;"
+            onclick="downloadZip()">まとめてZIP保存</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <script>
+        let splitBlobs = [];
+
+        function handleSplit() {
+            const file = document.getElementById('splitInput').files[0];
+            const r = parseInt(document.getElementById('rows').value);
+            const c = parseInt(document.getElementById('cols').value);
+            const results = document.getElementById('splitResults');
+
+            if (!file || r < 1 || c < 1) {
+                results.innerHTML = '<p style="color:red; font-weight:bold;">エラー：画像と分割数を正しく入力してください。</p>';
+                return;
+            }
+
+            results.innerHTML = '';
+            splitBlobs = [];
+            document.getElementById('splitZipBtn').style.display = 'none';
+
+            const img = new Image();
+            img.onload = () => {
+                const w = img.width / c;
+                const h = img.height / r;
+                let count = 0;
+
+                for (let y = 0; y < r; y++) {
+                    for (let x = 0; x < c; x++) {
+                        const cvs = document.createElement('canvas');
+                        cvs.width = w;
+                        cvs.height = h;
+                        cvs.getContext('2d').drawImage(img, x * w, y * h, w, h, 0, 0, w, h);
+
+                        cvs.toBlob(blob => {
+                            count++;
+                            const url = URL.createObjectURL(blob);
+                            const name = `p_${y}_${x}.png`;
+                            splitBlobs.push({ blob: blob, name: name });
+
+                            const item = document.createElement('div');
+                            item.className = 'result-item';
+                            item.innerHTML = `<img src="${url}"><br><button class="dl-btn" onclick="saveAs('${url}', '${name}')">保存</button>`;
+                            results.appendChild(item);
+
+                            if (count === r * c) {
+                                document.getElementById('splitZipBtn').style.display = 'block';
+                            }
+                        }, 'image/png');
+                    }
+                }
+            };
+            img.src = URL.createObjectURL(file);
+        }
+
+        function downloadZip() {
+            if (splitBlobs.length === 0) return;
+            const zip = new JSZip();
+            splitBlobs.forEach(b => zip.file(b.name, b.blob));
+            zip.generateAsync({ type: "blob" }).then(c => saveAs(c, "bunkatsu.zip"));
+        }
+    </script>
+</body>
+
+</html>
