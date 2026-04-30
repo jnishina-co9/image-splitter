@@ -84,6 +84,18 @@
             margin-top: 20px;
         }
 
+        /* リセットボタン（アウトラインスタイル） */
+        .reset-btn {
+            background-color: #FFFFFF;
+            color: #1c1c1c;
+            border: 1px solid #1c1c1c;
+        }
+
+        .reset-btn:hover {
+            background-color: #1c1c1c;
+            color: #FFFFFF;
+        }
+
         .dl-btn {
             padding: 12px 0;
             font-size: 14px;
@@ -160,6 +172,8 @@
 
         <button id="splitZipBtn" class="action-btn zip-btn" style="display: none;"
             onclick="downloadZip()">まとめてZIP保存</button>
+
+        <button id="resetBtn" class="action-btn reset-btn" onclick="handleReset()">リセットする</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -211,10 +225,19 @@
 
                             const item = document.createElement('div');
                             item.className = 'result-item';
-                            item.innerHTML = `
-                                <img src="${url}">
-                                <button class="dl-btn" onclick="saveAs(URL.createObjectURL(splitBlobs.find(b=>b.name==='${name}').blob), '${name}')">保存</button>
-                            `;
+
+                            const preview = document.createElement('img');
+                            preview.src = url;
+                            item.appendChild(preview);
+
+                            const btn = document.createElement('button');
+                            btn.className = 'dl-btn';
+                            btn.textContent = '保存';
+                            btn.addEventListener('click', () => {
+                                saveAs(blob, name);
+                            });
+                            item.appendChild(btn);
+
                             results.appendChild(item);
 
                             if (count === r * c) {
@@ -235,6 +258,21 @@
             zip.generateAsync({ type: "blob" }).then(content => {
                 saveAs(content, `split_images_${dateStr}.zip`);
             });
+        }
+
+        function handleReset() {
+            // ファイル選択をクリア
+            document.getElementById('splitInput').value = '';
+            // 分割数を初期値に戻す
+            document.getElementById('rows').value = 2;
+            document.getElementById('cols').value = 2;
+            // 分割結果をクリア
+            document.getElementById('splitResults').innerHTML = '';
+            // ZIP保存ボタンを非表示
+            document.getElementById('splitZipBtn').style.display = 'none';
+            // Blobデータのメモリ解放
+            splitBlobs.forEach(b => URL.revokeObjectURL(b.blob));
+            splitBlobs = [];
         }
     </script>
 </body>
