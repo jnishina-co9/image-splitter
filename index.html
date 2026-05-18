@@ -4,149 +4,382 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>画像分割アプリ - Image Splitter</title>
+    <title>画像分割ツール</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        /* 
+         * Minimal Web App Design System
+         * Colors: Base (#FFFFFF), Main (#1D3FBB), Accent (#E9E9E9)
+         * Radii: 0px, Shadows: none, Borders: none
+         */
         body {
             font-family: 'Noto Sans JP', sans-serif;
-            text-align: center;
             background-color: #FFFFFF;
-            color: #1c1c1c;
+            color: #1D3FBB;
             margin: 0;
-            padding: 20px 10px;
+            padding: 48px 24px 0;
             line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         h1 {
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0;
+            color: #1D3FBB;
+            letter-spacing: 0.05em;
+        }
+
+        .subtitle {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1D3FBB;
+            letter-spacing: 0.1em;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .card {
+            background-color: #E9E9E9;
+            padding: 48px;
+            border: none;
+            border-radius: 0px;
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .step-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .step-title {
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
             font-size: 24px;
             font-weight: 700;
-            margin-bottom: 30px;
+            color: #1D3FBB;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .content-section {
-            background: #FFFFFF;
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: left;
-        }
-
-        .step {
-            font-size: 18px;
-            font-weight: 700;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #1c1c1c;
-            padding-bottom: 5px;
-        }
-
-        input[type="file"],
-        input[type="number"] {
-            font-size: 16px;
-            padding: 12px;
-            border: 1px solid #ccc;
-            width: 100%;
-            box-sizing: border-box;
-            border-radius: 0;
-            background: #f9f9f9;
-        }
-
-        input[type="number"] {
-            width: 70px;
-            display: inline-block;
-            margin-right: 10px;
-        }
-
-        /* ボタン共通スタイル */
-        .action-btn,
-        .dl-btn {
-            background-color: #1c1c1c;
-            /* 通常時：黒 */
+        /* ファイル入力エリア */
+        .file-drop-area {
+            background-color: #1D3FBB;
             color: #FFFFFF;
-            /* 文字色：白 */
-            border: 1px solid #1c1c1c;
+            padding: 48px 24px;
+            text-align: center;
             cursor: pointer;
-            font-weight: 700;
-            border-radius: 0;
-            transition: all 0.2s ease;
-            display: block;
-            width: 100%;
+            transition: opacity 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            box-sizing: border-box;
         }
 
-        .action-btn {
-            font-size: 18px;
-            padding: 15px;
-            margin-top: 20px;
+        .file-drop-area:hover {
+            opacity: 0.9;
         }
 
-        .zip-btn {
-            margin-top: 20px;
+        .file-drop-area input[type="file"] {
+            display: none;
         }
 
-        /* リセットボタン（アウトラインスタイル） */
-        .reset-btn {
-            background-color: #FFFFFF;
-            color: #1c1c1c;
-            border: 1px solid #1c1c1c;
-        }
-
-        .reset-btn:hover {
-            background-color: #1c1c1c;
+        .file-drop-area .icon {
+            width: 48px;
+            height: 48px;
             color: #FFFFFF;
         }
 
-        .dl-btn {
-            padding: 12px 0;
-            font-size: 14px;
+        .file-drop-area .file-label {
+            font-size: 18px;
+            font-weight: 700;
         }
 
-        /* ホバー時の設定（モノトーン反転） */
-        .action-btn:hover,
-        .dl-btn:hover {
-            background-color: #e3e3e3;
-            /* ホバー時：ライトグレー */
-            border-color: #e3e3e3;
-            color: #1c1c1c;
-            /* 文字色を黒にして視認性を確保 */
+        .file-drop-area .file-name {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        /* 選択画像プレビューエリア */
+        .preview-container {
+            width: 100%;
+            margin-top: 24px;
+            margin-bottom: 16px;
+            background-color: transparent; /* コンテナ全体の白背景を解除 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        .preview-container img {
+            max-width: 100%;
+            max-height: 320px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            background-color: #FFFFFF; /* 画像の実際のサイズ分だけに白背景を適用 */
+            display: block;
+        }
+
+        /* 数値入力エリア */
+        .grid-inputs {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1D3FBB;
+        }
+
+        input[type="number"] {
+            background-color: #1D3FBB;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 0px;
+            padding: 16px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            width: 120px;
+            text-align: center;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 1;
+        }
+
+        /* ボタン共通 */
+        .btn-primary {
+            background-color: #1D3FBB;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 0px;
+            box-shadow: none;
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            padding: 24px 48px;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background-color: #FFFFFF; /* グレー背景カード上のため白背景に設定 */
+            color: #1D3FBB;
+            border: none;
+            border-radius: 0px;
+            box-shadow: none;
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            padding: 24px 48px;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            opacity: 0.8;
+        }
+
+        .btn-item-dl {
+            background-color: #E9E9E9; /* 白背景アイテム上のためグレー背景に設定 */
+            color: #1D3FBB;
+            border: none;
+            border-radius: 0px;
+            box-shadow: none;
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 16px;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-item-dl:hover {
+            opacity: 0.8;
+        }
+
+        /* 結果エリア */
+        .result-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
         }
 
         .result-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: flex-start;
-            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 24px;
         }
 
         .result-item {
-            width: calc(20% - 8px);
-            border: 1px solid #eee;
-            padding: 8px;
-            text-align: center;
-            background: #FFFFFF;
-            box-sizing: border-box;
+            background-color: #FFFFFF;
+            padding: 16px;
+            border: none;
+            border-radius: 0px;
+            box-shadow: none;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            gap: 16px;
+        }
+
+        .result-item .img-wrapper {
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: #E9E9E9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
         .result-item img {
             width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
+            height: 100%;
+            object-fit: contain;
             display: block;
-            margin-bottom: 10px;
         }
 
-        @media (max-width: 768px) {
-            .result-item {
-                width: calc(33.33% - 7px);
+        .error-message {
+            color: #1D3FBB;
+            font-weight: 700;
+            font-size: 18px;
+            text-align: center;
+            padding: 24px;
+            background-color: #FFFFFF;
+        }
+
+        .actions-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* フッターコンテナ：ページ最下部に配置 */
+        .footer {
+            padding: 24px 0; /* 上下に24pxのゆとりある余白を設け、窮屈さを排除 */
+            text-align: center; /* テキストを中央揃え */
+            background-color: #FFFFFF; /* 背景色（白） */
+            margin-top: auto; /* コンテンツが少ない場合でも画面最下部に自動配置する設定 */
+            width: 100%;
+        }
+
+        /* コピーライトテキスト */
+        .footer__copy {
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            font-size: 14px; /* 本文より少し小さめのサイズで控えめに配置 */
+            color: #1D3FBB; /* ヘッダーやツールと同色のメインカラー（青） */
+            margin: 0; /* ブラウザデフォルトの余白をリセット */
+            letter-spacing: 0.05em; /* 英数字の詰まりを防ぎ、モダンで洗練された印象に */
+        }
+
+        @media (max-width: 767px) {
+            body {
+                padding: 24px 16px 0;
             }
 
-            .dl-btn {
-                padding: 10px 0;
-                font-size: 13px;
+            .container {
+                margin: 0 auto 32px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+
+            .header-section {
+                margin-bottom: 32px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .step-title {
+                font-size: 20px;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 18px 32px;
+                font-size: 16px;
+            }
+
+            .grid-inputs {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+            }
+
+            .input-group {
+                justify-content: space-between;
+            }
+
+            input[type="number"] {
+                width: 60%;
             }
         }
     </style>
@@ -154,32 +387,72 @@
 
 <body>
 
-    <h1>画像を分割する</h1>
-
-    <div class="content-section">
-        <div class="step">1. 画像を選択</div>
-        <input type="file" id="splitInput" accept="image/*">
-
-        <div class="step">2. 分割数（タテ × ヨコ）</div>
-        <div style="margin-bottom: 10px;">
-            タテ: <input type="number" id="rows" value="2" min="1">
-            ヨコ: <input type="number" id="cols" value="2" min="1">
+    <div class="container">
+        <div class="header-section">
+            <h1>IMAGE SPLITTER</h1>
+            <div class="subtitle">- 画像分割ツール -</div>
         </div>
 
-        <button id="splitBtn" class="action-btn" onclick="handleSplit()">分割する</button>
+        <div class="card">
+            <!-- Step 1 -->
+            <div class="step-section">
+                <h2 class="step-title"><i data-lucide="image"></i> 1. 画像を選択</h2>
+                <div class="file-drop-area" onclick="document.getElementById('splitInput').click()">
+                    <i data-lucide="upload-cloud" class="icon"></i>
+                    <div class="file-label">クリックして画像ファイルを選択</div>
+                    <div id="previewContainer" class="preview-container" style="display: none;">
+                        <img id="selectedImagePreview" src="" alt="選択されたプレビュー画像">
+                    </div>
+                    <div id="fileNameDisplay" class="file-name">未選択</div>
+                    <input type="file" id="splitInput" accept="image/*" onchange="handleFileChange(event)">
+                </div>
+            </div>
 
-        <div id="splitResults" class="result-container"></div>
+            <!-- Step 2 -->
+            <div class="step-section">
+                <h2 class="step-title"><i data-lucide="grid"></i> 2. 分割数（タテ × ヨコ）</h2>
+                <div class="grid-inputs">
+                    <div class="input-group">
+                        <span>タテ (Rows)</span>
+                        <input type="number" id="rows" value="2" min="1">
+                    </div>
+                    <div class="input-group">
+                        <span>ヨコ (Cols)</span>
+                        <input type="number" id="cols" value="2" min="1">
+                    </div>
+                </div>
+            </div>
 
-        <button id="splitZipBtn" class="action-btn zip-btn" style="display: none;"
-            onclick="downloadZip()">まとめてZIP保存</button>
+            <!-- Action Button -->
+            <button id="splitBtn" class="btn-primary" onclick="handleSplit()">
+                <i data-lucide="scissors"></i> 分割を実行する
+            </button>
+        </div>
 
-        <button id="resetBtn" class="action-btn reset-btn" onclick="handleReset()">リセットする</button>
+        <!-- Results Area -->
+        <div id="resultArea" class="result-wrapper" style="display: none;">
+            <div class="card">
+                <h2 class="step-title"><i data-lucide="layout-grid"></i> 分割結果</h2>
+                <div id="splitResults" class="result-container"></div>
+                <div class="actions-group">
+                    <button id="splitZipBtn" class="btn-primary" style="display: none;" onclick="downloadZip()">
+                        <i data-lucide="package"></i> まとめてZIP保存
+                    </button>
+                    <button id="resetBtn" class="btn-secondary" onclick="handleReset()">
+                        <i data-lucide="rotate-ccw"></i> リセットする
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <script>
+        // Lucideアイコンの初期化
+        lucide.createIcons();
+
         let splitBlobs = [];
 
         function getFormattedDate() {
@@ -188,14 +461,34 @@
             return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
         }
 
+        function handleFileChange(event) {
+            const file = event.target.files[0];
+            const display = document.getElementById('fileNameDisplay');
+            const previewContainer = document.getElementById('previewContainer');
+            const previewImg = document.getElementById('selectedImagePreview');
+            if (file) {
+                display.textContent = file.name;
+                previewImg.src = URL.createObjectURL(file);
+                previewContainer.style.display = 'flex';
+            } else {
+                display.textContent = '未選択';
+                previewImg.src = '';
+                previewContainer.style.display = 'none';
+            }
+        }
+
         function handleSplit() {
             const file = document.getElementById('splitInput').files[0];
             const r = parseInt(document.getElementById('rows').value);
             const c = parseInt(document.getElementById('cols').value);
+            const resultArea = document.getElementById('resultArea');
             const results = document.getElementById('splitResults');
 
+            resultArea.style.display = 'flex';
+
             if (!file || r < 1 || c < 1) {
-                results.innerHTML = '<p style="color:red; font-size:14px;">入力エラーがあります。</p>';
+                results.innerHTML = '<div class="error-message">画像ファイルを選択し、正しい分割数を入力してください。</div>';
+                document.getElementById('splitZipBtn').style.display = 'none';
                 return;
             }
 
@@ -226,13 +519,17 @@
                             const item = document.createElement('div');
                             item.className = 'result-item';
 
+                            const imgWrapper = document.createElement('div');
+                            imgWrapper.className = 'img-wrapper';
+
                             const preview = document.createElement('img');
                             preview.src = url;
-                            item.appendChild(preview);
+                            imgWrapper.appendChild(preview);
+                            item.appendChild(imgWrapper);
 
                             const btn = document.createElement('button');
-                            btn.className = 'dl-btn';
-                            btn.textContent = '保存';
+                            btn.className = 'btn-item-dl';
+                            btn.innerHTML = '<i data-lucide="download"></i> 保存';
                             btn.addEventListener('click', () => {
                                 saveAs(blob, name);
                             });
@@ -240,8 +537,11 @@
 
                             results.appendChild(item);
 
+                            // 動的に追加したアイコンをレンダリング
+                            lucide.createIcons({ root: item });
+
                             if (count === r * c) {
-                                document.getElementById('splitZipBtn').style.display = 'block';
+                                document.getElementById('splitZipBtn').style.display = 'flex';
                             }
                         }, 'image/png');
                     }
@@ -261,20 +561,24 @@
         }
 
         function handleReset() {
-            // ファイル選択をクリア
             document.getElementById('splitInput').value = '';
-            // 分割数を初期値に戻す
+            document.getElementById('fileNameDisplay').textContent = '未選択';
+            document.getElementById('previewContainer').style.display = 'none';
+            document.getElementById('selectedImagePreview').src = '';
             document.getElementById('rows').value = 2;
             document.getElementById('cols').value = 2;
-            // 分割結果をクリア
+            document.getElementById('resultArea').style.display = 'none';
             document.getElementById('splitResults').innerHTML = '';
-            // ZIP保存ボタンを非表示
             document.getElementById('splitZipBtn').style.display = 'none';
-            // Blobデータのメモリ解放
+
             splitBlobs.forEach(b => URL.revokeObjectURL(b.blob));
             splitBlobs = [];
         }
     </script>
+
+    <footer class="footer">
+        <p class="footer__copy">© 2026 深森呼吸</p>
+    </footer>
 </body>
 
 </html>
