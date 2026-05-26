@@ -437,14 +437,15 @@
             <!-- Step 2 -->
             <div class="step-section">
                 <h2 class="step-title"><i data-lucide="grid"></i> 2. 分割数（タテ × ヨコ）</h2>
+                <p style="font-size: 14px; color: #00c9a7; font-weight: 500; margin: 0;">※ 各値は1〜50の範囲で入力してください。</p>
                 <div class="grid-inputs">
                     <div class="input-group">
                         <span>タテ (Rows)</span>
-                        <input type="number" id="rows" value="3" min="1">
+                        <input type="number" id="rows" value="3" min="1" max="50">
                     </div>
                     <div class="input-group">
                         <span>ヨコ (Cols)</span>
-                        <input type="number" id="cols" value="3" min="1">
+                        <input type="number" id="cols" value="3" min="1" max="50">
                     </div>
                 </div>
             </div>
@@ -541,8 +542,8 @@
 
             resultArea.style.display = 'flex';
 
-            if (!file || r < 1 || c < 1) {
-                results.innerHTML = '<div class="error-message">画像ファイルを選択し、正しい分割数を入力してください。</div>';
+            if (!file || r < 1 || c < 1 || r > 50 || c > 50) {
+                results.innerHTML = '<div class="error-message">画像ファイルを選択し、正しい分割数（1〜50）を入力してください。</div>';
                 document.getElementById('splitZipBtn').style.display = 'none';
                 return;
             }
