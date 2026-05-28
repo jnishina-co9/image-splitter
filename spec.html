@@ -79,6 +79,8 @@
     letter-spacing: 0.12em;
     color: var(--color-main);
     text-transform: uppercase;
+    text-decoration: none;
+    display: block;
   }
 
   .sidebar__doc-type {
@@ -727,7 +729,7 @@
   <!-- ======= SIDEBAR ======= -->
   <aside class="sidebar" id="sidebar" role="navigation" aria-label="目次">
     <div class="sidebar__brand">
-      <div class="sidebar__app-name">IMAGE SPLITTER</div>
+      <a href="#" class="sidebar__app-name">IMAGE SPLITTER</a>
       <div class="sidebar__doc-type">仕様書 — Specification v1.0</div>
     </div>
 
@@ -848,7 +850,7 @@
           <div class="spec-block spec-block--premise">
             <div class="spec-block__label">前提条件</div>
             <ul>
-              <li>モダンブラウザ（Canvas API対応）で動作</li>
+              <li>モダンブラウザ（Google ChromeやSafari、Edgeなどの最新のインターネット閲覧ソフト）で動作</li>
               <li>インストール不要・サーバー不要</li>
               <li>完全無料・ログイン不要</li>
             </ul>
@@ -883,7 +885,7 @@
               <svg class="accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="accordion__body" id="body-1-1">
-              <p>アップロードした画像を、指定した「タテ × ヨコ」のマス目に従って均等に切り分け、個別に保存したり、まとめてZIP形式で保存したりできる、インストール不要の完全無料ツール「IMAGE SPLITTER（画像分割ツール）」です。</p>
+              <p>アップロードした画像を、指定した「タテ × ヨコ」のマス目に従って均等に切り分け、個別に保存したり、まとめてZIP形式で保存したりできる、インストール不要の完全無料ツールです。</p>
             </div>
           </div>
 
@@ -897,19 +899,12 @@
             </button>
             <div class="accordion__body" id="body-1-2">
               <p><strong>背景：</strong>Instagramのグリッド投稿やゲーム開発で使うスプライト画像を作成するために、画像をきれいに分割したいというニーズが存在します。</p>
-              <p><strong>課題：</strong>既存のオンライン画像分割サービスには「外部サーバーへの画像アップロードによるプライバシー漏洩リスク」「無料版での画質劣化」「有料プランが必要」という課題がありました。</p>
+              <p><strong>課題：</strong>既存のオンライン画像分割サービスには、外部サーバーへの画像アップロードによるプライバシー漏洩リスクや無料版での画質劣化、有料プランが必要などの課題があります。</p>
               <p><strong>解決策：</strong>外部サーバーへ画像を一切送信せず、ユーザーのブラウザ上だけで処理を完結させることで、「完全なプライバシー保護」「高画質な切り出し」「完全無料」を同時に実現しました。</p>
             </div>
           </div>
 
-          <!-- 決定理由ブロック -->
-          <div class="spec-block spec-block--rationale">
-            <div class="spec-block__label">設計判断の根拠</div>
-            <ul>
-              <li>「クライアントサイド完結」を選んだのは、プライバシー保護とゼロコスト運営を同時に達成するため</li>
-              <li>サーバーを持たないことで、維持費なしに永続的なサービス提供が可能</li>
-            </ul>
-          </div>
+
         </div>
       </section>
 
@@ -963,22 +958,20 @@
             </div>
           </div>
 
-          <div class="block-grid">
-            <div class="spec-block spec-block--premise">
-              <div class="spec-block__label">採用の前提</div>
-              <ul>
-                <li>外部ライブラリはCDN経由で読み込む</li>
-                <li>ビルドツール・バンドラ不使用</li>
-                <li>依存関係は最小限に抑える</li>
-              </ul>
-            </div>
-            <div class="spec-block spec-block--constraint">
-              <div class="spec-block__label">技術的制約</div>
-              <ul>
-                <li>Canvas APIはCORS制限あり（外部URL画像は不可）</li>
-                <li>大容量画像（数十MB超）はブラウザのメモリ制限に注意</li>
-              </ul>
-            </div>
+          <div class="spec-block spec-block--premise">
+            <div class="spec-block__label">アプリの動作ルール</div>
+            <ul>
+              <li>外部ライブラリはCDN（ネット上のサーバーからプログラムを直接読み込む仕組み）経由で読み込む</li>
+              <li>ビルドツール・バンドラ（開発ファイルを整理・合体させるツール）不使用</li>
+              <li>依存関係（アプリが依存する外部のプログラム数）は最小限に抑える（不具合やセキュリティリスクを防ぐため）</li>
+            </ul>
+          </div>
+          <div class="spec-block spec-block--constraint">
+            <div class="spec-block__label">ご利用時の注意点</div>
+            <ul>
+              <li>Canvas APIはCORS制限（他サイトの画像を勝手に加工できない仕組み）あり（外部URL画像は不可）</li>
+              <li>大容量画像（数十MB超）はブラウザのメモリ制限に注意（画面が固まったり強制終了したりするため、数MB程度への縮小を推奨）</li>
+            </ul>
           </div>
         </div>
       </section>
@@ -1080,7 +1073,7 @@
               <svg class="accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="accordion__body" id="body-4-1">
-              <p>使用色を「白（#FFFFFF）」「エメラルドグリーン（#00c9a7）」「明るいグレー（#EFEFEF）」の3色だけに制限。枠線や影、角丸を一切使用しないフラットな色面の切り替えで、現代的で洗練された高級感のあるデザインを実現しました。</p>
+              <p>使用色を、白、エメラルドグリーン、明るいグレーの3色だけに制限。枠線や影、角丸を一切使用しないフラットな色面の切り替えで、現代的で洗練された高級感のあるデザインを実現しました。</p>
             </div>
           </div>
 
@@ -1110,23 +1103,7 @@
             </div>
           </div>
 
-          <div class="block-grid">
-            <div class="spec-block spec-block--rationale">
-              <div class="spec-block__label">決定理由</div>
-              <ul>
-                <li>3色制限はデザイン一貫性を保つための意図的な制約</li>
-                <li>角丸なし・影なしはフラットさを徹底するための設計判断</li>
-                <li>ホバー効果はopacity変更のみでシンプルに統一</li>
-              </ul>
-            </div>
-            <div class="spec-block spec-block--premise">
-              <div class="spec-block__label">使用ライブラリ</div>
-              <ul>
-                <li>アイコン：Lucide Icons（軽量オープンソース）</li>
-                <li>フォント：Outfit（英数字）/ Noto Sans JP（日本語）</li>
-              </ul>
-            </div>
-          </div>
+
         </div>
       </section>
 
@@ -1149,7 +1126,7 @@
               <svg class="accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="accordion__body" id="body-5-1">
-              <p>通常のWebアプリのように画像データをインターネット経由で別のサーバーに送信することがありません。外部サーバーへの送信がないため、アップロードによる情報漏洩リスクをゼロにしています。</p>
+              <p>通常のWebアプリのように画像データをインターネット経由で別のサーバーに送信することがありません。外部サーバーへの送信がないため、外部へのアップロードに伴う情報漏洩リスクを排除しています。</p>
               <p>さらに、サーバー上で重い画像処理を行わないため、運営者側も高価なサーバー費用を払う必要がなく、完全無料でサービスを持続させることができます。</p>
             </div>
           </div>
@@ -1163,18 +1140,12 @@
               <svg class="accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="accordion__body" id="body-5-2">
-              <p>ブラウザ上で画像を切り分ける際、<code>URL.createObjectURL</code> でメモリ上の画像データに一時的なURLを発行して画面に表示させています。</p>
-              <p>この一時URLは放置するとブラウザのメモリを消費し続けるため、「リセット時」や「次の分割実行時」に不要になった一時URLを <code>URL.revokeObjectURL</code> によって確実に削除し、快適なブラウザ環境を維持しています。</p>
+              <p>ブラウザ上で画像を切り分ける際、メモリ上の画像データに一時的なURLを発行して画面に表示させています。</p>
+              <p>この一時URLは放置するとブラウザのメモリを消費し続けるため、リセット時や次の分割実行時に不要になったものを削除し、快適なブラウザ環境を維持しています。</p>
             </div>
           </div>
 
-          <div class="spec-block spec-block--rationale">
-            <div class="spec-block__label">設計判断の根拠</div>
-            <ul>
-              <li><code>URL.revokeObjectURL</code> の明示的な呼び出しは、長時間使用時のブラウザ劣化を防ぐための意図的な実装</li>
-              <li>Canvas要素はオフスクリーンで処理し、DOMに追加しないことでレンダリングコストを最小化</li>
-            </ul>
-          </div>
+
         </div>
       </section>
 
@@ -1215,7 +1186,7 @@
             </div>
             <div class="flow-step__content">
               <div class="flow-step__title">分割実行</div>
-              <div class="flow-step__desc">「分割を実行する」ボタンをクリック。前回の生成データとObjectURLを破棄（メモリ解放）</div>
+              <div class="flow-step__desc">「分割を実行する」ボタンをクリック。（動作が重くならないよう、前回作った画像データはメモリから削除します）</div>
             </div>
           </div>
           <div class="flow-step">
@@ -1224,8 +1195,8 @@
               <div class="flow-step__line"></div>
             </div>
             <div class="flow-step__content">
-              <div class="flow-step__title">Canvas描画</div>
-              <div class="flow-step__desc">オフスクリーンCanvasのメモリ領域に画像をロード</div>
+              <div class="flow-step__title">画像の読み込み</div>
+              <div class="flow-step__desc">ブラウザの非表示の画像処理エリアに画像を読み込む</div>
             </div>
           </div>
           <div class="flow-step">
@@ -1244,8 +1215,8 @@
               <div class="flow-step__line"></div>
             </div>
             <div class="flow-step__content">
-              <div class="flow-step__title">Blob変換</div>
-              <div class="flow-step__desc">切り抜いた部分をPNG形式のバイナリデータ（Blob）に変換</div>
+              <div class="flow-step__title">画像データ変換</div>
+              <div class="flow-step__desc">切り抜いた部分をPNG形式の画像データに変換</div>
             </div>
           </div>
           <div class="flow-step">
@@ -1255,7 +1226,7 @@
             </div>
             <div class="flow-step__content">
               <div class="flow-step__title">プレビュー表示</div>
-              <div class="flow-step__desc">BlobデータにObjectURLを割り当て、画面にサムネイル一覧として表示</div>
+              <div class="flow-step__desc">切り抜いた画像データを、確認用の縮小画像（サムネイル）として画面に並べて表示</div>
             </div>
           </div>
           <div class="flow-step">
@@ -1265,7 +1236,7 @@
             </div>
             <div class="flow-step__content">
               <div class="flow-step__title">保存処理</div>
-              <div class="flow-step__desc">JSZipとFileSaver.jsを使用し、一括ZIP保存または個別保存を実行</div>
+              <div class="flow-step__desc">一括でZIP保存、または個別に画像を保存</div>
             </div>
           </div>
         </div>
@@ -1281,8 +1252,8 @@
         </div>
         <div class="section-body">
 
-          <div class="accordion" id="acc-7-1">
-            <button class="accordion__trigger" aria-expanded="false" aria-controls="body-7-1">
+          <div class="accordion is-open" id="acc-7-1">
+            <button class="accordion__trigger" aria-expanded="true" aria-controls="body-7-1">
               <div class="accordion__trigger-left">
                 <span class="accordion__tag accordion__tag--future">将来</span>
                 <span class="accordion__title">分割線のプレビュー表示機能</span>
@@ -1290,7 +1261,7 @@
               <svg class="accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="accordion__body" id="body-7-1">
-              <p>アップロードした画像の上に、指定した分割数に応じた格子線がリアルタイムで重なって表示され、実行前に分割イメージが把握できる機能の搭載。</p>
+              <p>アップロードした画像の上に、指定した分割数に応じた格子線がリアルタイムで重なって表示され、実行前に分割イメージが把握できる機能の搭載を検討しています。</p>
             </div>
           </div>
 
@@ -1298,38 +1269,12 @@
             <button class="accordion__trigger" aria-expanded="false" aria-controls="body-7-2">
               <div class="accordion__trigger-left">
                 <span class="accordion__tag accordion__tag--future">将来</span>
-                <span class="accordion__title">主要SNSサイズへのワンクリック最適化</span>
-              </div>
-              <svg class="accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="accordion__body" id="body-7-2">
-              <p>Instagramの「3×3」「3×1」や、その他のサービスに合わせた最適な分割プリセット（事前設定ボタン）の用意。</p>
-            </div>
-          </div>
-
-          <div class="accordion" id="acc-7-3">
-            <button class="accordion__trigger" aria-expanded="false" aria-controls="body-7-3">
-              <div class="accordion__trigger-left">
-                <span class="accordion__tag accordion__tag--future">将来</span>
-                <span class="accordion__title">ドラッグによる自由な分割調整</span>
-              </div>
-              <svg class="accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="accordion__body" id="body-7-3">
-              <p>均等分割だけでなく、切り抜く境界線をマウス操作で自由に動かせるフリーカット機能の追加。</p>
-            </div>
-          </div>
-
-          <div class="accordion" id="acc-7-4">
-            <button class="accordion__trigger" aria-expanded="false" aria-controls="body-7-4">
-              <div class="accordion__trigger-left">
-                <span class="accordion__tag accordion__tag--future">将来</span>
                 <span class="accordion__title">出力画像フォーマットの追加</span>
               </div>
               <svg class="accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
-            <div class="accordion__body" id="body-7-4">
-              <p>現在は高画質なPNG形式のみの対応ですが、ファイルサイズを抑えられるJPEG形式やWebP形式への変換保存機能の導入。</p>
+            <div class="accordion__body" id="body-7-2">
+              <p>現在は高画質なPNG形式のみの対応ですが、ファイルサイズを抑えられるJPEG形式やWebP形式への変換保存機能の導入も視野に入れています。</p>
             </div>
           </div>
 
